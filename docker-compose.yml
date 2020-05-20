@@ -1,0 +1,82 @@
+version: '3'
+
+services:
+  frontend:
+    restart: always
+    build: ./frontend
+    ports:
+      - '8888:80'
+    volumes:
+      - ./frontend:/usr/src/app/frontend
+      - /usr/src/app/frontend/node_modules
+    networks:
+      - app-network
+    depends_on:
+      - backend
+
+  backend:
+    restart: always
+    build: ./backend
+    command: npm start
+    ports:
+      - '3000:3000'
+    environment:
+      - HOST=postgres
+      - DB=debt_db
+      - USERNAME=postgres
+      - PASSWORD=fl0r14n0p0l1s
+    volumes:
+      - ./backend:/usr/src/app/backend
+      - /usr/src/app/backend/node_modules
+    networks:
+      - app-network
+    depends_on:
+      - postgres
+
+  postgres:
+    restart: always
+    ports:
+      - 5432:5432
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_DB=debt_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=fl0r14n0p0l1s
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    networks:
+      - app-network
+
+  test-backend:
+    build: ./backend
+    command: npm run test
+    environment:
+      - HOST=test-postgres
+      - DB=debt_db_test
+      - USERNAME=postgres
+      - PASSWORD=fl0r14n0p0l1s
+      - PORT=5433
+    networks:
+      - app-network
+    depends_on:
+      - test-postgres
+
+  test-postgres:
+    restart: always
+    ports:
+      - 5433:5433
+    command: -p 5433
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_DB=debt_db_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=fl0r14n0p0l1s
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:

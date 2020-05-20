@@ -1,0 +1,67 @@
+<mat-card>
+  <mat-card-title>Nova dívida</mat-card-title>
+  <form>
+    <mat-form-field>
+      <mat-label>Escolha o usuário</mat-label>
+      <mat-select required [formControl]="f.idUser" name="idUser">
+        <mat-option *ngFor="let user of users" [value]="user.id">
+          {{ user.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="f.idUser.invalid">Este campo é obrigatório</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        required
+        placeholder="Razão da dívida"
+        [formControl]="f.reason"
+        name="reason"
+      />
+      <mat-error *ngIf="f.reason.invalid">Este campo é obrigatório</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Data da dívida</mat-label>
+      <input
+        matInput
+        required
+        [max]="maxDate"
+        [formControl]="f.date"
+        [matDatepicker]="myDatepicker"
+      />
+      <mat-error *ngIf="f.reason.invalid">Este campo é obrigatório</mat-error>
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="myDatepicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #myDatepicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        required
+        currencyMask
+        [options]="{
+          prefix: 'R$ ',
+          thousands: '.',
+          decimal: ',',
+          align: 'left'
+        }"
+        placeholder="Valor da dívida"
+        [formControl]="f.value"
+        name="value"
+      />
+      <mat-error *ngIf="f.value.invalid">Este campo é obrigatório</mat-error>
+    </mat-form-field>
+  </form>
+  <button mat-raised-button (click)="updateDebt()" color="primary">
+    Salvar
+  </button>
+
+  <button mat-raised-button (click)="cancel()">
+    Cancelar
+  </button>
+</mat-card>
