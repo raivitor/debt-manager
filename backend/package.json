@@ -13,7 +13,7 @@
   "author": "Rai Vitor <raivitor@gmail.com>",
   "private": true,
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "express": "^4.17.1",
     "express-validator": "^6.5.0",
     "nodemon": "^2.0.4",
